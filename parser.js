@@ -6,7 +6,7 @@ const fs = require('fs');
 class Person {
 
   // Menambahkan attributes [erson]
-  constructor(id,firstName,lastName,email,phone,created_at=Date()){
+  constructor(id,firstName,lastName,email,phone,created_at){
     this._id = id
     this._firstName = firstName
     this._lastName = lastName
@@ -23,14 +23,18 @@ class Person {
 class PersonParser extends Person {
 
   constructor(file,firstName,lastName,email,phone) {
-    super(firstName,lastName,email,phone)
+    super(' ',firstName,lastName,email,phone)
     this._file = file
     this._people = null
   }
 
+  readFile(file){
+    return fs.readFileSync(file, 'utf8').trim().split("\n").map(function(x){return x.split(',')})
+  }
+
   get people() {
     // membaca file 1 level tingkat berdasarkan nama
-    let arrPerson = fs.readFileSync(this._file, 'utf8').trim().split("\n").map(function(x){return x.split(',')})
+    let arrPerson = this.readFile(this._file)
     let objPerson = []
     // memasukkan data dari csv menjadi object dengan parameter header data atau index 0
     // conver data dari csv menjadi object
@@ -38,10 +42,9 @@ class PersonParser extends Person {
       // push new class Person
       objPerson.push(new Person(arrPerson[j][0],arrPerson[j][1],arrPerson[j][2],arrPerson[j][3],arrPerson[j][4],arrPerson[j][5]))
     }
-
     // mengirim array dalam bentuk array object
     this._people = objPerson
-    return this._people
+    return this
   }
 
   get size(){
@@ -49,9 +52,11 @@ class PersonParser extends Person {
   }
 
   addPerson() {
-    var add = new Person(this._people.length + 1,this._firstName,this._lastName,this._email,this._phone,this._createdAt)
+    var today = new Date()
+    var add = new Person(this._people.length+1,this._firstName,this._lastName,this._email,this._phone,today.toISOString())
     var arrNewPeople = []
-
+    // console.log(add);
+    // console.log(today.toISOString());
     // add new people first
     this._people.push(add)
 
@@ -77,5 +82,5 @@ class PersonParser extends Person {
 
 let parser = new PersonParser('people.csv','udin','tampan','siTampan@gmail.com','086-1771-911')
 parser.people;
-console.log(`There are ${parser.size} people in the file '${parser._file}'.`)
+console.log(`There are ${parser.people.size} people in the file '${parser._file}'.`)
 parser.addPerson();
