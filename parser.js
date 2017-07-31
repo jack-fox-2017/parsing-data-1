@@ -26,14 +26,14 @@ class PersonParser {
   }
 
   parser() {
-    let list = fs.readFileSync('people.csv','utf8').trim().split('\n');
+    let list = fs.readFileSync('people.csv', 'utf8').toString().trim().split('\n')
     let data = [];
     let arrObj = [];
     for (var i = 0; i < list.length; i++) {
       data[i] = list[i].split(',')
     }
-    for (var i = 0; i < data.length; i++) {
-      arrObj[i] = new Person(data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], data[i][5]);
+    for (var j = 0; j < data.length; j++) {
+      arrObj[j] = new Person(data[j][0], data[j][1], data[j][2], data[j][3], data[j][4], data[j][5]);
 
     }
     return arrObj;
@@ -42,7 +42,7 @@ class PersonParser {
 
   get people() {
     let people = {}
-    people.size = this._people.length;
+    people.size = this._people.length-1;
     return people
   }
 
@@ -51,6 +51,7 @@ class PersonParser {
    let ObjBaru = Obj;
    this.string = `${ObjBaru.id},${ObjBaru.first_name},${ObjBaru.last_name},${ObjBaru.email},${ObjBaru.phone},${ObjBaru.createAt}`
   //  console.log(ObjBaru);
+  console.log(this.string);
   fs.appendFileSync(this._file, this.string + '\n')
    return ObjBaru
   }
@@ -60,6 +61,9 @@ class PersonParser {
 let personParser = new PersonParser('people.csv')
 // console.log(parser.parser());
 personParser.addPerson(new Person('201','Ahmad','Nasikin','nasikin@mail.com','021-213'))
+personParser.addPerson(new Person('202','Nasikin','Nasikin','nasikin@mail.com','021-213'))
+personParser.addPerson(new Person('203','Ahmad','Ahmad','nasikin@mail.com','021-213'))
+personParser.addPerson(new Person('204','Nasikin','Ahmad','nasikin@mail.com','021-213'))
 // console.log(`There are ${personParser.people.length} people in the file '${personParser.file}'.`)
 // console.log(personParser.people);
 // let parser = new PersonParser('people.csv')
