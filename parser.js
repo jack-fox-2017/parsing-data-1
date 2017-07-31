@@ -17,7 +17,7 @@ class PersonParser {
   constructor(file) {
     this._file = file
     this._people = [];
-    this.bikinObj()
+    // this.bikinObj()
   }
 
 
@@ -36,16 +36,15 @@ class PersonParser {
       var object = new Person(arry[i][0], arry[i][1], arry[i][2], arry[i][3], arry[i][4], arry[i][5])
       this._people.push(object)
     }
-
-
   }
+  
   get people() {
-    return this._people
+    return {size: this._people.length -1}
   }
 
   addPerson() {
-    var satu = new Person(`203`, `otong`, `Zidan`, `ZSteven@google.com`, `1-5-4-6-855-879`, `20 juli`)
-    var dua = new Person(`201`, `otong`, `steven`, `OSteven@google.com`, `1-5-4-6-855-879`, `20 juli`)
+    var satu = new Person(`${this._people.length+ 1}`, `otong`, `Zidan`, `ZSteven@google.com`, `1-5-4-6-855-879`, `20 juli`)
+    var dua = new Person(`${this._people.length+ 1}`, `tama`, `steven`, `OSteven@google.com`, `1-5-4-6-855-879`, `20 juli`)
     this._people.push(satu)
     this._people.push(dua)
     var satuTmp = `${satu.id},${satu.FirstName},${satu.LastName},${satu.email},${satu.phone},${satu.created},${new Date()}\n`
@@ -64,7 +63,7 @@ class PersonParser {
 let parser = new PersonParser('people.csv')
 parser.bikinObj();
 parser.addPerson();
-console.log(parser.people);
+parser._people;
 
 
-// console.log(`There are ${parser.people.size} people in the file '${parser.file}'.`)
+console.log(`There are ${parser.people.size} people in the file '${parser._file}'.`)
