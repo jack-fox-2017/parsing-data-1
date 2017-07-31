@@ -27,7 +27,7 @@ class PersonParser {
   }
 
   allPerson() {
-    let file = fs.readFileSync(this._file, 'utf-8').split('\r\n')
+    let file = fs.readFileSync(this._file, 'utf-8').trim().split('\r\n')
     let result = []
     for (let i = 1; i < file.length; i++) {
       let item = file[i].split(',')
