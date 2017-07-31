@@ -15,7 +15,7 @@ class Person {
   }
 
   write() {
-    return `${this._id},${this._first_name},${this._last_name},${this._email},${this._phone},${this._created_at}`
+    return `${this._id},${this._first_name},${this._last_name},${this._email},${this._phone},${this._created_at.toISOString()}`
   }
 }
 
@@ -37,7 +37,7 @@ class PersonParser {
   }
 
   get people() {
-    return this._people
+    return {arr: this._people, size: this._people.length}
   }
 
   addPerson(person) {
@@ -57,8 +57,7 @@ class PersonParser {
 let parser = new PersonParser('people.csv')
 let rahmat = new Person(201, 'Rahmat', 'Hidayat', 'rahmatramahidayat@gmail.com', '081334132495')
 
-console.log(rahmat.write());
-console.log(`There are ${parser.people.length} people in the file '${parser._file}'.`)
+console.log(`There are ${parser.people.size} people in the file '${parser._file}'.`)
 parser.addPerson(rahmat)
-console.log(`There are ${parser.people.length} people in the file '${parser._file}'.`)
+console.log(`There are ${parser.people.size} people in the file '${parser._file}'.`)
 parser.save()
