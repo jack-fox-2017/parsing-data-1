@@ -50,8 +50,8 @@ class PersonParser {
    this._people.push(new Person(Obj));
    let ObjBaru = Obj;
    this.string = `${ObjBaru.id},${ObjBaru.first_name},${ObjBaru.last_name},${ObjBaru.email},${ObjBaru.phone},${ObjBaru.createAt}`
-   console.log(ObjBaru);
-  fs.appendFileSync(this._file,'\n' + this.string)
+  //  console.log(ObjBaru);
+  fs.appendFileSync(this._file, this.string + '\n')
    return ObjBaru
   }
 
@@ -64,4 +64,4 @@ personParser.addPerson(new Person('201','Ahmad','Nasikin','nasikin@mail.com','02
 // console.log(personParser.people);
 // let parser = new PersonParser('people.csv')
 
-console.log(`There are ${personParser.people.size} people in the file '.`)
+console.log(`There are ${personParser.people.size} people in the file '${personParser._file}''.`)
