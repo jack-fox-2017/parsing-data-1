@@ -1,85 +1,91 @@
 "use strict"
+
+// add library fs untuk membaca file
 const fs = require('fs');
 
 class Person {
-  // Look at the above CSV file
-  // What attributes should a Person object have?
-  constructor(id, first_name, last_name, email, phone, created_at) {
-      this.id = id;
-      this.first_name = first_name;
-      this.last_name = last_name;
-      this.email = email;
-      this.phone = phone;
-      this.size = 0
-      this.created_at = new Date (created_at);
+
+  // Menambahkan attributes [erson]
+  constructor(id, firstName, lastName, email, phone, created_at) {
+    this._id = id
+    this._firstName = firstName
+    this._lastName = lastName
+    this._email = email
+    this._phone = phone
+    this._createdAt = created_at
   }
-  get insert(){
-    return `${this.id}, ${this.first_name}, ${this.last_name}, ${this.email}, ${this.phone}, ${this.created_at}`
+
+  toString() {
+    return this._id + ',' + this._firstName + ',' + this._lastName + ',' + this._email + ',' + this._phone + ',' + this._createdAt
   }
 }
 
 class PersonParser {
 
-  constructor(file) {
+  constructor(file, firstName, lastName, email, phone) {
+    // super(' ',firstName,lastName,email,phone)
     this._file = file
     this._people = null
-    this.peopleArr = []
-    this.peopleObj = []
+  }
+
+  startReadFile(callback) {
+    fs.readFile(this._file, `utf-8`, (err, data) => {
+      let dataFile = data.trim().split('\n')
+      let result = []
+      for (var i = 1; i < dataFile.length; i++) {
+        let arr = dataFile[i].split(',')
+        result.push(new Person(
+          arr[0],
+          arr[1],
+          arr[2],
+          arr[3],
+          arr[4],
+          arr[5]
+        ))
+      }
+      this._people = result
+      //console.log(this._people);
+      callback()
+    }
+    )
   }
 
   get people() {
-    // return this._people
-    return this.peopleArr
+    return { arr: this._people, size: this._people.length }
   }
 
-  addPerson(data) {
-    fs.appendFile('people.csv', data, function (err) {
-    if (err) throw err;
-    console.log('Saved!');
-  });
+  addPerson() {
+    var today = new Date()
+    // let
+    let newNum = parseInt(this._people[this._people.length-1]._id)
+    var add = new Person(newNum+1, 'achim', 'baggins', 'achim_baggins@yahoo.com', '0818-0370-4343', today.toISOString())
+    var arrNewPeople = []
 
+    this._people.push(add)
+    arrNewPeople.push(['id', 'first_name', 'last_name', 'email', 'phone', 'created_at'])
+
+    // push data kedalam temporarry array
+    for (let j = 0; j < this._people.length; j++) {
+      arrNewPeople.push(this._people[j].toString())
+    }
+    //console.log(arrNewPeople);
+    this.writeFile(arrNewPeople)
   }
 
-
-
-  readFile(fileName, callback){
-    let fileContent = fs.readFileSync(fileName, 'utf8');
-    callback(fileContent);
-  }
-
-  readcsv() {
-    this.readFile('people.csv', fileContent => {
-      // console.log(fileContent.split('\n'));
-      let row_split = fileContent.trim().split('\n')
-      //trim berfungsi untuk menghilangkan line kosong di row paling bawah file csv
-
-      //setelah file dibaca displit berdasarkan karakter enter \n
-      //akan menghasilkan array yg setiap barisnya sesuai row di csv
-      //tinggal push hasil split dan displit lagi berdasarkan koma ,
-
-      for(let i = 0; i < row_split.length; i++){
-        var row_data = row_split[i].split(',')
-        this.peopleArr.push(row_data)
-      }
-        // console.log(this.peopleArr)//[0][0]);
-
-        // convert peopleArr ke object
-        for(let i = 1; i < this.peopleArr.length; i++){
-        let toObject = {};
-          for(let j = 0; j < this.peopleArr[0].length; j++){
-            toObject[this.peopleArr[0][j]]=this.peopleArr[i][j];
-          }
-        this.peopleObj.push(toObject);
-        }
-        console.log(this.peopleObj);
-    })
-
+  writeFile(arr) {
+    // add data kedalam CSV
+    fs.writeFile(this._file, arr.join("\n"), function (err) {
+      if (err) throw err;
+      return 'New People Added!';
+    });
   }
 
 }
 
-
 let parser = new PersonParser('people.csv')
-parser.addPerson('202,Achim,Baggins,achim_baggins@yahoo.com,8-180-370-43434,2013-12-02T06:45:30-08:00\n');
-parser.readcsv();
-console.log(`There are ${parser.people.length} people in the file '${parser._file}'.`)
+parser.startReadFile(() => {
+  parser.people;
+  console.log(`There are ${parser.people.size} people in the file '${parser._file}'.`)
+  parser.addPerson();
+  console.log(`After add there are ${parser.people.size} people in the file '${parser._file}'.`)
+})
